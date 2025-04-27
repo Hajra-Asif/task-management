@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #6366F1;
+            --secondary-color: #4F46E5;
+            --text-color: #1F2937;
+            --light-text: #6B7280;
+            --bg-color: #F9FAFB;
+            --section-bg: #FFFFFF;
+            --card-bg: #FFFFFF;
+            --border-color: #E5E7EB;
+            --header-bg: #FFFFFF;
+            --sidebar-bg: #111827;
+            --sidebar-text: #F3F4F6;
+            --hover-color: #4F46E5;
+            --input-bg: #F3F4F6;
+            --btn-text: #FFFFFF;
+            --shadow-color: rgba(0, 0, 0, 0.05);
+            --danger-color: #EF4444;
+            --success-color: #10B981;
+            --warning-color: #F59E0B;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            overflow-x: hidden;
+            color: var(--text-color);
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 250px;
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+            padding: 20px;
+            transition: width 0.3s ease-in-out;
+            overflow: hidden;
+        }
+
+        .sidebar a,
+        .sidebar p {
+            color: var(--sidebar-text);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+        }
+
+        .sidebar a:hover,
+        .sidebar p:hover {
+            background-color: var(--hover-color);
+            color: var(--btn-text);
+        }
+
+        .sidebar.collapsed {
+            width: 60px;
+            padding: 10px;
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            width: calc(100% - 250px);
+            transition: margin-left 0.3s ease-in-out, width 0.3s ease-in-out;
+        }
+
+        .content.collapsed {
+            margin-left: 60px;
+            width: calc(100% - 60px);
+        }
+
+        .toggle-btn {
+            background: var(--primary-color);
+            color: var(--btn-text);
+            border: none;
+            padding: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 20px;
+        }
+
+        .toggle-btn.collapsed {
+            width: 100%;
+            text-align: center;
+        }
+
+        @media (max-width:600px) {
+            .dashboardRow {
+                display: flex;
+                flex-direction: column;
+            }
+        }
+
+        .form-container {
+            max-width: 1000px;
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px var(--shadow-color);
+            margin-top: 50px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px var(--primary-color);
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: var(--text-color);
+        }
+
+        .dropdown-item:hover {
+            background-color: var(--primary-color);
+            color: var(--btn-text);
+        }
+
+        .profile-pic-container {
+            margin-bottom: 15px;
+        }
+
+        .profile-pic {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--primary-color);
+        }
+        
+        .btn2 {
+            width: 101px;
+            height: 41px;
+            color: var(--btn-text);
+            background-color: var(--primary-color);
+            border-radius: 5px;
+            border: 1px solid var(--primary-color);
+            font-size: 0.9375em;
+            line-height: 1.5em;
+            font-family: "Poppins", sans-serif;
+            letter-spacing: 0.06em;
+            cursor: pointer;
+        }
+
+        .btn2:hover {
+            background-color: var(--secondary-color);
+            border-color: var(--secondary-color);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container-fluid">
+        <div class="row dashboardRow d-flex">
+            <nav class="sidebar d-flex flex-column" id="sidebar">
+                <button class="toggle-btn" id="toggleBtn"><i class="fas fa-bars"></i></button>
+                <a href="./dashboard.html"><i class="fas fa-home me-3"></i> Home</a>
+                <a href="./profile.html"><i class="fas fa-user me-3"></i> Profile</a>
+                <a href="./createBlog.html"><i class="fas fa-plus me-3"></i> Create a blog</a>
+                <a href=""><i class="fas fa-lock me-3"></i> Update Password</a>
+                <p id="logoutBtn"><i class="fas fa-sign-out-alt me-3"></i> Logout</p>
+            </nav>
+            <div class="content" id="content">
+                
+                <div class="form-container">
+                    <h1 class="text-start">User Profile</h1>
+
+                    <div class="profile-pic-container">
+                        <img id="profileImage" src="/api/placeholder/120/120" alt="Profile Picture"
+                            class="profile-pic">
+                    </div>
+
+                    <form>
+                        <div class="mb-3">
+                            <label for="profilePic" class="form-label">Upload Profile Picture</label>
+                            <input type="file" class="form-control" id="profilePic" accept="image/*">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter your name">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email">
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="gender" class="form-label">Gender</label>
+                            <select class="form-select" id="gender">
+                                <option>Male</option>
+                                <option>Female</option>
+                                <option>Other</option>
+                            </select>
+                        </div>
+
+                        <button type="submit" class="btn2 w-100">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.getElementById('toggleBtn').addEventListener('click', function () {
+            let sidebar = document.getElementById('sidebar');
+            let content = document.getElementById('content');
+
+            if (sidebar && content) { // Ensure elements exist before accessing them
+                sidebar.classList.toggle('collapsed');
+                content.classList.toggle('collapsed');
+            } else {
+                console.error("Sidebar or content element not found!");
+            }
+        });
+
+        document.getElementById('profilePic').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profileImage').src = e.target.result;
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+</body>
+
+</html>

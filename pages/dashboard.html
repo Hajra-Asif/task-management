@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Modern Dashboard</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6366F1;
+      --secondary-color: #4F46E5;
+      --text-color: #1F2937;
+      --light-text: #6B7280;
+      --bg-color: #F9FAFB;
+      --section-bg: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --border-color: #E5E7EB;
+      --header-bg: #FFFFFF;
+      --sidebar-bg: #111827;
+      --sidebar-text: #F3F4F6;
+      --hover-color: #4F46E5;
+      --input-bg: #F3F4F6;
+      --btn-text: #FFFFFF;
+      --shadow-color: rgba(0, 0, 0, 0.05);
+      --danger-color: #EF4444;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      color: var(--text-color);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 280px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 1.5rem 1rem;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      z-index: 100;
+      box-shadow: 4px 0 10px var(--shadow-color);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+    }
+
+    .sidebar-nav {
+      margin-top: 2rem;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar a,
+    .sidebar p {
+      color: var(--sidebar-text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar p:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+    }
+
+    .nav-active {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+    
+    .sidebar.collapsed .logo-text,
+    .sidebar.collapsed .nav-text {
+      display: none;
+    }
+
+    .sidebar.collapsed a,
+    .sidebar.collapsed p {
+      justify-content: center;
+    }
+
+    .content {
+      margin-left: 280px;
+      padding: 1.5rem;
+      width: calc(100% - 280px);
+      transition: all 0.3s ease;
+    }
+
+    .content.collapsed {
+      margin-left: 80px;
+      width: calc(100% - 80px);
+    }
+
+    .topbar {
+      background-color: var(--section-bg);
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 4px 6px var(--shadow-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .search-bar {
+      position: relative;
+      max-width: 400px;
+      width: 100%;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--input-bg);
+      transition: all 0.2s;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--light-text);
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .notifications {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: var(--input-bg);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .notifications:hover {
+      background-color: var(--border-color);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background-color: var(--danger-color);
+      color: white;
+      font-size: 0.75rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .profile-img {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--border-color);
+    }
+
+    .profile-info {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .profile-info {
+        display: block;
+      }
+    }
+
+    .profile-name {
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .profile-role {
+      font-size: 0.875rem;
+      color: var(--light-text);
+      margin: 0;
+    }
+
+    .user-info {
+      background: var(--section-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px var(--shadow-color);
+      margin-bottom: 1.5rem;
+    }
+
+    .user-info h3 {
+      margin-top: 0;
+      font-weight: 600;
+      font-size: 1.25rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-color);
+    }
+
+    .user-detail {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      align-items: center;
+    }
+
+    .detail-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background-color: rgba(99, 102, 241, 0.1);
+      color: var(--primary-color);
+    }
+
+    .detail-content strong {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--light-text);
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-content span {
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      border-radius: 8px;
+      padding: 0.625rem 1.25rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+    }
+
+    .btn-icon {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-title {
+      margin: 2rem 0 1.5rem;
+      font-weight: 700;
+      font-size: 1.5rem;
+      color: var(--text-color);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .task-container {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .task-container {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .task-column {
+      background: var(--section-bg);
+      padding: 1.5rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px var(--shadow-color);
+      min-height: 300px;
+    }
+
+    .column-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .column-title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .badge-count {
+      background-color: var(--input-bg);
+      color: var(--light-text);
+      padding: 0.25rem 0.5rem;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .column-icon {
+      width: 24px;
+      height: 24px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 6px;
+    }
+
+    .pending-icon {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+
+    .progress-icon {
+      background-color: rgba(99, 102, 241, 0.1);
+      color: var(--primary-color);
+    }
+
+    .done-icon {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .add-task {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background-color: var(--input-bg);
+      color: var(--light-text);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .add-task:hover {
+      background-color: var(--primary-color);
+      color: white;
+    }
+
+    .task-card {
+      background: var(--section-bg);
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px var(--shadow-color);
+      transition: all 0.3s;
+    }
+
+    .task-card:hover {
+      box-shadow: 0 6px 12px var(--shadow-color);
+      transform: translateY(-2px);
+    }
+
+    .task-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .task-title {
+      font-weight: 600;
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .task-priority {
+      font-size: 0.75rem;
+      padding: 0.125rem 0.5rem;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+
+    .priority-high {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: var(--danger-color);
+    }
+
+    .priority-medium {
+      background-color: rgba(245, 158, 11, 0.1);
+      color: var(--warning-color);
+    }
+
+    .priority-low {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: var(--success-color);
+    }
+
+    .task-desc {
+      font-size: 0.875rem;
+      color: var(--light-text);
+      margin: 0.5rem 0;
+      line-height: 1.5;
+    }
+
+    .task-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 1rem;
+      font-size: 0.75rem;
+      color: var(--light-text);
+    }
+
+    .task-due {
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .task-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-task {
+      padding: 0.25rem;
+      border: none;
+      background: transparent;
+      color: var(--light-text);
+      cursor: pointer;
+      border-radius: 4px;
+      transition: all 0.2s;
+    }
+
+    .btn-task:hover {
+      background-color: var(--input-bg);
+      color: var(--text-color);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      color: var(--sidebar-text);
+      border: none;
+      padding: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    @media (max-width: 991px) {
+      .sidebar {
+        width: 80px;
+      }
+      
+      .sidebar .logo-text,
+      .sidebar .nav-text {
+        display: none;
+      }
+      
+      .sidebar a,
+      .sidebar p {
+        justify-content: center;
+      }
+      
+      .content {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
+      
+      .sidebar.expanded {
+        width: 280px;
+        z-index: 1000;
+      }
+      
+      .sidebar.expanded .logo-text,
+      .sidebar.expanded .nav-text {
+        display: block;
+      }
+      
+      .sidebar.expanded a,
+      .sidebar.expanded p {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+      }
+      
+      .search-bar {
+        max-width: 100%;
+      }
+      
+      .profile {
+        width: 100%;
+        justify-content: space-between;
+      }
+    }
+
+    .board-section {
+  position: relative;
+  width: 200px;
+  height: 120px;
+  background: var(--section-bg);
+  border: 2px dashed var(--primary-color);
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.2s;
+}
+.board-section:hover {
+  background: var(--primary-color);
+  color: #fff;
+  transform: translateY(-4px);
+}
+.board-section .plus-icon {
+  font-size: 2rem;
+}
+
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <h2 class="logo-text">TaskBoard</h2>
+        <button class="toggle-btn" id="toggleBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-nav">
+        <div class="nav-item">
+          <a href="./dashboard.html" class="nav-active">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="./profile.html">
+            <i class="fas fa-user"></i>
+            <span class="nav-text">Profile</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="./createBlog.html">
+            <i class="fas fa-edit"></i>
+            <span class="nav-text">Create Blog</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="./updatePassword.html">
+            <i class="fas fa-lock"></i>
+            <span class="nav-text">Security</span>
+          </a>
+        </div>
+        <div class="nav-item mt-auto">
+          <p id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="nav-text">Logout</span>
+          </p>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="content" id="content">
+      <div class="topbar">
+        <div class="search-bar">
+          <i class="fas fa-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="Search tasks, projects...">
+        </div>
+        
+        <div class="profile">
+          <div class="notifications">
+            <i class="fas fa-bell"></i>
+            <span class="notification-badge">3</span>
+          </div>
+          <img src="/api/placeholder/100/100" alt="Profile" class="profile-img" id="userImage">
+          <div class="profile-info">
+            <p class="profile-name" id="userId"></p>
+          </div>
+        </div>
+      </div>
+      
+      <div class="user-info">
+        <h3>User Profile</h3>
+        <div class="user-detail">
+          <div class="detail-icon">
+            <i class="fas fa-user"></i>
+          </div>
+          <div class="detail-content">
+            <strong>Full Name</strong>
+            <p><span id="userId2"></span></p>
+          </div>
+        </div>
+        
+        <div class="user-detail">
+          <div class="detail-icon">
+            <i class="fas fa-envelope"></i>
+          </div>
+          <div class="detail-content">
+            <strong>Email Address</strong>
+            <span id="userEmail">john.doe@example.com</span>
+          </div>
+        </div>
+        
+        <div class="user-detail">
+          <div class="detail-icon">
+            <i class="fas fa-venus-mars"></i>
+          </div>
+          <div class="detail-content">
+            <strong>Gender</strong>
+            <span id="userGender">Male</span>
+          </div>
+        </div>
+        
+        <a href="./profile.html" class="mt-3 d-inline-block">
+          <button class="btn btn-primary btn-icon">
+            <i class="fas fa-edit"></i> Edit Profile
+          </button>
+        </a>
+      </div>
+      
+
+      <div class="myboardsection d-flex justify-content-between align-items-center">
+        <h2 class="section-title">
+          <i class="fas fa-tasks" style="color: var(--primary-color);"></i>My Onboarding task
+        </h2>
+       <a href="./createBlog.html"> <button id="addBoardBtn" class="btn btn-primary btn-icon">
+        <i class="fas fa-edit"></i> Add task on board
+      </button></a>
+      </div>
+
+
+      <div id="boardsContainer" class="mt-4 d-flex flex-wrap gap-3">
+        <!-- existing boards… -->
+      </div>
+
+
+
+      <h2 class="section-title">
+        <i class="fas fa-tasks" style="color: var(--primary-color);"></i> My Tasks
+      </h2>
+      
+   
+
+
+
+
+      <div class="task-container">
+        <div class="task-column" id="pendingTasksColumn">
+          <div class="column-header">
+            <h5 class="column-title">
+              <span class="column-icon pending-icon">
+                <i class="fas fa-clock"></i>
+              </span>
+              Pending
+              <span class="badge-count">2</span>
+            </h5>
+            <div class="add-task">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div id="pendingTasks"></div>
+        </div>
+      
+        <div class="task-column" id="inProgressTasksColumn">
+          <div class="column-header">
+            <h5 class="column-title">
+              <span class="column-icon progress-icon">
+                <i class="fas fa-spinner"></i>
+              </span>
+              In Progress
+              <span class="badge-count">3</span>
+            </h5>
+            <div class="add-task">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div id="inProgressTasks"></div>
+        </div>
+      
+        <div class="task-column" id="doneTasksColumn">
+          <div class="column-header">
+            <h5 class="column-title">
+              <span class="column-icon done-icon">
+                <i class="fas fa-check"></i>
+              </span>
+              Completed
+              <span class="badge-count">2</span>
+            </h5>
+            <div class="add-task">
+              <i class="fas fa-plus"></i>
+            </div>
+          </div>
+          <div id="doneTasks"></div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script type="module" src="../javascript/dashboard.js"></script>
+  <script type="module" src="../javascript/auth.js"></script>
+  <script type="module" src="../javascript/login.js"></script>
+  <script>
+    document.getElementById('toggleBtn').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebar');
+      const content = document.getElementById('content');
+      
+      if (sidebar && content) {
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('collapsed');
+      }
+    });
+    
+   
+
+  </script>
+</body>
+</html>

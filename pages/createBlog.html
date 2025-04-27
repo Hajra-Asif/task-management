@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Create Product Post</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #6366F1;
+      --secondary-color: #4F46E5;
+      --text-color: #1F2937;
+      --light-text: #6B7280;
+      --bg-color: #F9FAFB;
+      --section-bg: #FFFFFF;
+      --card-bg: #FFFFFF;
+      --border-color: #E5E7EB;
+      --header-bg: #FFFFFF;
+      --sidebar-bg: #111827;
+      --sidebar-text: #F3F4F6;
+      --hover-color: #4F46E5;
+      --input-bg: #F3F4F6;
+      --btn-text: #FFFFFF;
+      --shadow-color: rgba(0, 0, 0, 0.05);
+      --danger-color: #EF4444;
+      --success-color: #10B981;
+      --warning-color: #F59E0B;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--bg-color);
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
+      color: var(--text-color);
+    }
+
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 280px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text);
+      padding: 1.5rem 1rem;
+      transition: all 0.3s ease;
+      overflow: hidden;
+      z-index: 100;
+      box-shadow: 4px 0 10px var(--shadow-color);
+    }
+
+    .sidebar-logo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 0.75rem;
+      margin-bottom: 2rem;
+    }
+
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: white;
+      margin: 0;
+    }
+
+    .sidebar-nav {
+      margin-top: 2rem;
+    }
+
+    .nav-item {
+      margin-bottom: 0.5rem;
+    }
+
+    .sidebar a,
+    .sidebar p {
+      color: var(--sidebar-text);
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 0.875rem 1rem;
+      border-radius: 8px;
+      transition: all 0.2s;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 0;
+    }
+
+    .sidebar a:hover,
+    .sidebar p:hover {
+      background-color: rgba(255, 255, 255, 0.08);
+      color: white;
+    }
+
+    .nav-active {
+      background-color: var(--primary-color) !important;
+      color: white !important;
+    }
+
+    .sidebar.collapsed {
+      width: 80px;
+    }
+    
+    .sidebar.collapsed .logo-text,
+    .sidebar.collapsed .nav-text {
+      display: none;
+    }
+
+    .sidebar.collapsed a,
+    .sidebar.collapsed p {
+      justify-content: center;
+    }
+
+    .content {
+      margin-left: 280px;
+      padding: 1.5rem;
+      width: calc(100% - 280px);
+      transition: all 0.3s ease;
+    }
+
+    .content.collapsed {
+      margin-left: 80px;
+      width: calc(100% - 80px);
+    }
+
+    .toggle-btn {
+      background: transparent;
+      color: var(--sidebar-text);
+      border: none;
+      padding: 0.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+
+    .toggle-btn:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .blog-container {
+      max-width: 900px;
+      margin: 0 auto;
+      background: var(--section-bg);
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 6px var(--shadow-color);
+    }
+
+    .blog-container h1 {
+      color: var(--text-color);
+      font-weight: 700;
+      font-size: 1.75rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .form-label {
+      font-weight: 500;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    .form-control, .form-select {
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      background-color: var(--input-bg);
+      color: var(--text-color);
+      transition: all 0.2s;
+    }
+
+    .form-control:focus, .form-select:focus {
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+      outline: none;
+    }
+
+    .form-select {
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.75rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+    }
+
+    .upload-section {
+      margin: 2rem 0;
+    }
+
+    .upload-title {
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text-color);
+    }
+
+    .media-options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .media-icon {
+      width: 60px;
+      height: 60px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px dashed var(--primary-color);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+      background-color: rgba(99, 102, 241, 0.05);
+    }
+
+    .media-icon:hover {
+      background-color: rgba(99, 102, 241, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .media-icon i {
+      font-size: 1.5rem;
+      color: var(--primary-color);
+    }
+
+    .hidden-input {
+      display: none;
+    }
+
+    .media-preview {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-top: 1rem;
+      min-height: 100px;
+    }
+
+    .media-preview img,
+    .media-preview video {
+      width: 120px;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 2px 4px var(--shadow-color);
+    }
+
+    .section-divider {
+      margin: 2rem 0;
+      border-top: 1px solid var(--border-color);
+    }
+
+    .btn-primary {
+      background-color: var(--primary-color);
+      border-color: var(--primary-color);
+      color: var(--btn-text);
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: block;
+      width: 100%;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--secondary-color);
+      border-color: var(--secondary-color);
+      transform: translateY(-1px);
+    }
+
+    .preview-placeholder {
+      width: 120px;
+      height: 120px;
+      border: 2px dashed var(--border-color);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--light-text);
+      font-size: 0.875rem;
+      text-align: center;
+    }
+
+    .form-section {
+      margin-bottom: 1.5rem;
+    }
+
+    @media (max-width: 991px) {
+      .sidebar {
+        width: 80px;
+      }
+      
+      .sidebar .logo-text,
+      .sidebar .nav-text {
+        display: none;
+      }
+      
+      .sidebar a,
+      .sidebar p {
+        justify-content: center;
+      }
+      
+      .content {
+        margin-left: 80px;
+        width: calc(100% - 80px);
+      }
+      
+      .sidebar.expanded {
+        width: 280px;
+        z-index: 1000;
+      }
+      
+      .sidebar.expanded .logo-text,
+      .sidebar.expanded .nav-text {
+        display: block;
+      }
+      
+      .sidebar.expanded a,
+      .sidebar.expanded p {
+        justify-content: flex-start;
+      }
+    }
+
+    @media (max-width: 767px) {
+      .blog-container {
+        padding: 1.5rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid p-0">
+    <nav class="sidebar" id="sidebar">
+      <div class="sidebar-logo">
+        <h2 class="logo-text">TaskBoard</h2>
+        <button class="toggle-btn" id="toggleBtn">
+          <i class="fas fa-bars"></i>
+        </button>
+      </div>
+      
+      <div class="sidebar-nav">
+        <div class="nav-item">
+          <a href="./dashboard.html">
+            <i class="fas fa-tachometer-alt"></i>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="./profile.html">
+            <i class="fas fa-user"></i>
+            <span class="nav-text">Profile</span>
+          </a>
+        </div>
+        <div class="nav-item">
+          <a href="./createBlog.html" class="nav-active">
+            <i class="fas fa-edit"></i>
+            <span class="nav-text">Create Blog</span>
+          </a>
+        </div>
+    
+        <div class="nav-item">
+          <a href="./updatePassword.html">
+            <i class="fas fa-lock"></i>
+            <span class="nav-text">Security</span>
+          </a>
+        </div>
+        <div class="nav-item mt-auto">
+          <p id="logoutBtn">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="nav-text">Logout</span>
+          </p>
+        </div>
+      </div>
+    </nav>
+    
+    <div class="content" id="content">
+      <div class="blog-container">
+        <h1>
+          <i class="fas fa-box-open me-2" style="color: var(--primary-color);"></i>
+          Create New Task
+        </h1>
+        
+        <form id="taskform">
+          <div class="row">
+            <div class="col-md-7 form-section">
+              <label for="titleName" class="form-label">Task title</label>
+              <input type="text" class="form-control" id="titleName" placeholder="Enter task title" required>
+            </div>
+        
+            <div class="form-section">
+              <label for="mainContent" class="form-label">Task Description</label>
+              <p class="text-muted" style="font-size: 0.875rem; margin-top: -0.25rem;">Write your task in detail here</p>
+              <textarea class="form-control" id="mainContent" rows="6" placeholder="Write a description of your task..."></textarea>
+            </div>
+        
+            <div class="row">
+              <div class="col-md-6 form-section">
+                <label for="category" class="form-label">Priority</label>
+                <select class="form-select" id="category" required>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+        
+              <!-- New Date Input Field -->
+              <div class="col-md-6 form-section">
+                <label for="dueDate" class="form-label">Due Date</label>
+                <input type="date" class="form-control" id="dueDate" required>
+              </div>
+            </div>
+        
+            <div class="section-divider"></div>
+        
+            <button type="submit" class="btn btn-primary" style="width: auto;">
+              <i class="fas fa-cloud-upload-alt me-2"></i> Upload Task
+            </button>
+        
+          </div>
+        </form>
+        
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script>
+    document.getElementById('toggleBtn').addEventListener('click', function() {
+      const sidebar = document.getElementById('sidebar');
+      const content = document.getElementById('content');
+      
+      if (sidebar && content) {
+        sidebar.classList.toggle('collapsed');
+        content.classList.toggle('collapsed');
+      }
+    });
+    
+    document.addEventListener("change", function(event) {
+      if (event.target.matches(".media-icon input")) {
+        let file = event.target.files[0];
+        const previewContainer = document.querySelector(".media-preview");
+        
+        if (!previewContainer) {
+          console.error("Preview container not found for media input");
+          return;
+        }
+        
+        previewContainer.innerHTML = ""; // Clear previous preview
+        
+        if (file) {
+          let reader = new FileReader();
+          reader.onload = function(e) {
+            let mediaElement;
+            if (file.type.startsWith("image")) {
+              mediaElement = document.createElement("img");
+              mediaElement.src = e.target.result;
+              mediaElement.alt = "Product Image";
+            } else {
+              mediaElement = document.createElement("p");
+              mediaElement.textContent = "Unsupported file type: " + file.name;
+            }
+            previewContainer.appendChild(mediaElement);
+          };
+          reader.readAsDataURL(file);
+        } else {
+          // If no file selected, restore placeholder
+          const placeholder = document.createElement("div");
+          placeholder.className = "preview-placeholder";
+          placeholder.innerHTML = "Your product<br>image preview";
+          previewContainer.appendChild(placeholder);
+        }
+      }
+    });
+  </script>
+  
+  <script type="module" src="../javascript/createProduct.js"></script>
+  <script type="module" src="../javascript/login.js"></script>
+  <script type="module" src="../javascript/auth.js"></script>
+</body>
+</html>
