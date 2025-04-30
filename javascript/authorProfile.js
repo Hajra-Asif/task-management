@@ -76,7 +76,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 updatedAt: serverTimestamp()
             }, { merge: true });
 
-            alert("Profile updated successfully!");
+            Swal.fire({
+                icon: "success",
+                title: "Profile Updated",
+                text: "Your Profile has been Updated.",
+                showConfirmButton: false,
+                timer: 3000,
+                timerProgressBar: true,
+              })
+              .then((result) => {
+        
+                if (result.dismiss === Swal.DismissReason.timer) {
+                  window.location.href = "../pages/dashboard.html";
+                }
+              });
         } catch (error) {
             console.error("Error updating profile:", error);
             alert("Failed to update profile.");

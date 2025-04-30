@@ -708,6 +708,8 @@
 
       
     }
+
+    
   </style>
 </head>
 
@@ -757,16 +759,10 @@
 
     <div class="content" id="content">
       <div class="topbar">
-        <div class="search-bar">
-          <i class="fas fa-search search-icon"></i>
-          <input type="text" class="search-input" placeholder="Search tasks, projects...">
-        </div>
+       
 
         <div class="profile">
-          <div class="notifications">
-            <i class="fas fa-bell"></i>
-            <span class="notification-badge">3</span>
-          </div>
+        
           <img src="/api/placeholder/100/100" alt="Profile" class="profile-img" id="userImage">
           <div class="profile-info">
             <p class="profile-name" id="userId"></p>
@@ -814,7 +810,7 @@
       </div>
 
 
-      <div class="myboardsection d-flex justify-content-between align-items-center">
+      <div class="myboardsection d-flex flex-column flex-lg-row justify-content-between align-items-center">
         <h2 class="section-title">
           <i class="fas fa-tasks" style="color: var(--primary-color);"></i>My Onboarding task
         </h2>
