@@ -8,22 +8,22 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         :root {
-    --primary-color: #9360e3;
-    --secondary-color: #0f0f0f;
-    --text-color: #333333;
-    --light-text: #777777;
-    --bg-color: #ffffff;
-    --section-bg: #f8f9fa;
-    --card-bg: #ffffff;
-    --border-color: #e5e5e5;
-    --header-bg: #ffffff;
-    --footer-bg: #0f0f0f;
-    --footer-text: #ffffff;
-    --hover-color: #9360e3;
-    --input-bg: #f5f5f5;
-    --btn-text: #ffffff;
-    --shadow-color: rgba(0, 0, 0, 0.1);
-}
+            --primary-color: #6366F1;
+            --secondary-color: #0f0f0f;
+            --text-color: #333333;
+            --light-text: #777777;
+            --bg-color: #ffffff;
+            --section-bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --border-color: #e5e5e5;
+            --header-bg: #ffffff;
+            --footer-bg: #0f0f0f;
+            --footer-text: #ffffff;
+            --hover-color: #6366F1;
+            --input-bg: #f5f5f5;
+            --btn-text: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
 
 
         body {
@@ -90,6 +90,34 @@
             color: var(--footer-bg);
         }
 
+        .google-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #dadce0;
+            border-radius: 4px;
+            padding: 10px 15px;
+            background-color: #fff;
+            color: #3c4043;
+            font-size: 16px;
+            font-weight: 500;
+            font-family: 'Roboto', sans-serif;
+            cursor: pointer;
+            width: 100%;
+            transition: box-shadow 0.2s ease;
+        }
+
+        .google-btn:hover {
+            box-shadow: 0 1px 3px var(--hover-color),
+                0 4px 8px var(--hover-color);
+        }
+
+        .google-icon {
+            height: 20px;
+            width: 20px;
+            margin-right: 10px;
+        }
+
         @media (max-width: 768px) {
             .form-section {
                 flex-direction: column;
@@ -128,7 +156,12 @@
 
                 <button type="submit" class="btn btn-primary w-100">Register</button>
                 <h6 class="py-3 text-center">OR</h6>
-                <button type="button" id="google" class="btn w-100 mb-2 btn-danger">Sign in with google</button> 
+                <button type="button" id="google" class="google-btn">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo"
+                        class="google-icon" />
+                    <span>Continue with Google</span>
+                </button>
+
                 <p class="pt-3">Don't have an account ? <a href="../index.html">Login</a></p>
             </form>
         </div>
@@ -138,7 +171,7 @@
             <img src="../assets/images/lll.svg" alt="Student Illustration" class="img-fluid mt-4"
                 style="max-height: 300px;">
         </div>
-       
+
     </div>
 
 
@@ -151,7 +184,7 @@
         integrity="sha384-k6d4wzSIapyDyv1kpU366/PK5hCdSbCRGRCMv+eplOQJWyd1fbcAu9OCUj5zNLiq"
         crossorigin="anonymous"></script>
     <script src="../javascript/signup.js" type="module"></script>
-    
+
 </body>
 
 </html>

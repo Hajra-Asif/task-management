@@ -1,4 +1,3 @@
-
 import {
   auth,
   onAuthStateChanged,
@@ -10,10 +9,10 @@ import {
   where,
   getDocs,
   updateDoc,
-  deleteDoc
+  deleteDoc,
 } from "./firebase.js";
 
-/////////////////////////////////////////// show card and user data 
+/////////////////////////////////////////// show card and user data
 
 document.addEventListener("DOMContentLoaded", () => {
   const userImage = document.getElementById("userImage");
@@ -23,53 +22,148 @@ document.addEventListener("DOMContentLoaded", () => {
   const userGender = document.getElementById("userGender");
   const taskContainer = document.getElementById("task-container");
 
-
-  const container = document.getElementById('boardsContainer');
-
- 
+  const container = document.getElementById("boardsContainer");
 
   const fetchProducts = async (userid) => {
     const q = query(collection(db, "taskData"), where("userId", "==", userid));
-  
+
     onSnapshot(q, (querySnapshot) => {
-      // get each of the three columns
-      const pendingCol    = document.getElementById("boardsContainer");
+      // variables
+      const pendingCol = document.getElementById("boardsContainer");
       const inProgressCol = document.getElementById("inProgressTasks");
-      const doneCol       = document.getElementById("doneTasks");
-  
-      // clear them
+      const doneCol = document.getElementById("doneTasks");
+
+      // cleaning prev data
       pendingCol.innerHTML = "";
       inProgressCol.innerHTML = "";
       doneCol.innerHTML = "";
-  
-      querySnapshot.forEach((doc) => {
-        const data = doc.data();
-  
-        // create card wrapper
+
+      querySnapshot.forEach((docSnap) => {
+        const data = docSnap.data();
+        const docRef = doc(db, "taskData", docSnap.id);
+
+        // card wrapper
         const task = document.createElement("div");
         task.classList.add("task-card");
         task.classList.add("col-lg-3");
-  
-        // fill card
+
+        // card content
         task.innerHTML = `
-        
-          <div class="task-header">
-            <h6 class="task-title">${data.titleName}</h6>
-            <span class="task-priority priority-${data.category.toLowerCase()}">${data.category}</span>
-          </div>
-          <p class="task-desc">${data.description}</p>
-          <div class="task-meta">
-            <div class="task-due">
-              <i class="far fa-calendar"></i> ${data.dueDate || "—"}
-            </div>
-            <div class="task-actions">
-              <button class="btn-task"><i class="fas fa-edit"></i></button>
-              <button class="btn-task"><i class="fas fa-trash-alt"></i></button>
-            </div>
-          </div>`;
-  
+  <div class="task-header">
+    <h6 class="task-title">${data.titleName}</h6>
+    <span class="task-priority priority-${data.category.toLowerCase()}">${data.category
+          }</span>
+  </div>
+  <p class="task-desc">${data.description}</p>
+  <div class="task-meta">
+    <div class="task-due">
+      <i class="far fa-calendar"></i> ${data.dueDate || "—"}
+    </div>
+    <div class="task-actions">
+      <button class="btn-task edit-btn"><i class="fas fa-edit"></i></button>
+      <button class="btn-task delete-btn"><i class="fas fa-trash-alt"></i></button>
+    </div>
+  </div>
+`;
+
+        ///////////////////////////// edit functionality
+        task.querySelector(".edit-btn").addEventListener("click", function () {
+          document.getElementById("editModal").style.display = "flex";
+          document.getElementById("modalOverlay").style.display = "block";
+
+          // input fields
+          document.getElementById("editTitle").value = data.titleName;
+          document.getElementById("editCategory").value = data.category;
+          document.getElementById("editDescription").value = data.description;
+          document.getElementById("editDueDate").value = data.dueDate;
+
+          const form = document.getElementById("editTaskForm");
+
+          // remove existing listener
+
+          const newForm = form.cloneNode(true);
+          form.parentNode.replaceChild(newForm, form);
+
+          newForm.addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const updatedData = {
+              titleName: document.getElementById("editTitle").value,
+              category: document.getElementById("editCategory").value,
+              description: document.getElementById("editDescription").value,
+              dueDate: document.getElementById("editDueDate").value,
+            };
+
+            ///////////////////// update doc functionality
+            try {
+              await updateDoc(docRef, updatedData);
+
+              /// success modal
+
+              Swal.fire({
+                icon: "success",
+                title: "Task Updated",
+                text: "Your task has been updated.",
+                showConfirmButton: false,
+                timer: 2000,
+                timerProgressBar: true,
+              });
+              document.getElementById("editModal").style.display = "none";
+              document.getElementById("modalOverlay").style.display = "none";
+            } catch (error) {
+              console.error("Update failed:", error);
+              alert("Failed to update task.");
+            }
+          });
+        });
+
+        // modal close button
+        document
+          .querySelector(".close-button")
+          .addEventListener("click", function () {
+            document.getElementById("editModal").style.display = "none";
+            document.getElementById("modalOverlay").style.display = "none";
+          });
+
+        // modal close on clicking outside
+        window.onclick = function (event) {
+          const modal = document.getElementById("editModal");
+          if (event.target === modal) {
+            modal.style.display = "none";
+            document.getElementById("modalOverlay").style.display = "none";
+          }
+        };
+
+        /////////////////////////////////////// Delete functionality
+
+
+        task.querySelector(".delete-btn").addEventListener("click", async function () {
+          try {
+          
+
+            await deleteDoc(doc(db, "taskData", docSnap.id));
+            task.remove();
+             /// success modal
+
+              Swal.fire({
+                icon: "success",
+                title: "Task Deleted",
+                text: "Your task has been deleted sucessfully.",
+                showConfirmButton: false,
+                timer: 1000,
+                timerProgressBar: true,
+              });
+          }
+          catch (error) {
+            console.error("Error deleting task:", error);
+            alert("There was an error deleting the task.");
+          }
+        });
+
+
+
         // choose correct column based on status
-        switch(data.status) {
+        switch (data.status) {
           case "pending":
             pendingCol.appendChild(task);
             break;
@@ -86,123 +180,8 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     });
   };
-  
-  
-  
-    
 
-
-  //////////////////////////////////////////////////////////////
-
-
-  // Sample data for tasks
-  const tasks = {
-    pending: [
-      {
-        title: "Design System Update",
-        priority: "High",
-        description: "Update the design system with new components and document all changes.",
-        dueDate: "Apr 30",
-      },
-      {
-        title: "Content Planning",
-        priority: "Medium",
-        description: "Create content calendar for next month's blog posts and social media.",
-        dueDate: "May 5",
-      },
-    ],
-    inProgress: [
-      {
-        title: "Dashboard Redesign",
-        priority: "High",
-        description: "Implement new dashboard layout with improved analytics and user metrics.",
-        dueDate: "Apr 28",
-      },
-      {
-        title: "API Integration",
-        priority: "Medium",
-        description: "Connect backend API endpoints with frontend components for data fetching.",
-        dueDate: "May 2",
-      },
-      {
-        title: "User Testing",
-        priority: "Low",
-        description: "Conduct user testing sessions for the new feature implementation.",
-        dueDate: "May 8",
-      },
-    ],
-    completed: [
-      {
-        title: "Bug Fixing",
-        priority: "High",
-        description: "Fixed critical bugs in the authentication flow and dashboard performance.",
-        dueDate: "Apr 25",
-      },
-      {
-        title: "Documentation",
-        priority: "Medium",
-        description: "Created comprehensive documentation for the new API endpoints and components.",
-        dueDate: "Apr 23",
-      },
-    ],
-  };
-
-  // Function to create task HTML structure
-  function createTaskCard(task) {
-    return `
-      <div class="task-card">
-        <div class="task-header">
-          <h6 class="task-title">${task.title}</h6>
-          <span class="task-priority priority-${task.priority.toLowerCase()}">${task.priority}</span>
-        </div>
-        <p class="task-desc">${task.description}</p>
-        <div class="task-meta">
-          <div class="task-due">
-            <i class="far fa-calendar"></i> ${task.dueDate}
-          </div>
-          <div class="task-actions">
-            <button class="btn-task">
-              <i class="fas fa-edit"></i>
-            </button>
-            <button class="btn-task">
-              <i class="fas fa-trash-alt"></i>
-            </button>
-          </div>
-        </div>
-      </div>
-    `;
-  }
-
-  // Function to render tasks dynamically
-  function renderTasks() {
-    const pendingTasksContainer = document.getElementById("pendingTasks");
-    const inProgressTasksContainer = document.getElementById("inProgressTasks");
-    const doneTasksContainer = document.getElementById("doneTasks");
-
-    tasks.pending.forEach(task => {
-      pendingTasksContainer.innerHTML += createTaskCard(task);
-    });
-
-    tasks.inProgress.forEach(task => {
-      inProgressTasksContainer.innerHTML += createTaskCard(task);
-    });
-
-    tasks.completed.forEach(task => {
-      doneTasksContainer.innerHTML += createTaskCard(task);
-    });
-  }
-
-  // Initialize the tasks rendering
-  renderTasks();
-
-
-
-
-
-
-
-
-  ///////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////// authentic user check
 
   onAuthStateChanged(auth, (user) => {
     if (user) {

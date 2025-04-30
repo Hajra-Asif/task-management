@@ -1,8 +1,12 @@
 import { auth ,updatePassword, reauthenticateWithCredential, EmailAuthProvider} from "./firebase.js";
 
 
+
+
 // ===========================================================  updatePassword
 const updateUserPassword = async () => {
+
+    
     const currentPasswordInput = document.getElementById('currentPassword');
     const newPasswordInput = document.getElementById('newPassword');
     const confirmPasswordInput = document.getElementById('confirmPassword');
@@ -17,13 +21,21 @@ const updateUserPassword = async () => {
     const confirmPassword = confirmPasswordInput.value;
 
     if (newPassword !== confirmPassword) {
-        alert('New passwords do not match.');
+        Swal.fire({
+            icon: 'warning',
+            title: 'Password Mismatch',
+            text: 'New passwords do not match.',
+          });
         return;
     }
 
     const user = auth.currentUser;
     if (!user) {
-        alert('User not authenticated!');
+        Swal.fire({
+            icon: 'warning',
+            title: 'User not found',
+            text: 'Please make sure you are login',
+          });
         return;
     }
 
@@ -32,9 +44,21 @@ const updateUserPassword = async () => {
     try {
         await reauthenticateWithCredential(user, credential);
         await updatePassword(user, newPassword);
-        alert('Password updated successfully!');
+        Swal.fire({
+            icon: "success",
+            title: "Password Updated",
+            text: "Your password has been updated.",
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+          })
+        
     } catch (error) {
-        alert('Error updating password: ' + error.message);
+        Swal.fire({
+            icon: 'warning',
+            title: 'Error in updating password',
+            text: 'Please try again after a while',
+          });
     }
 };
 
